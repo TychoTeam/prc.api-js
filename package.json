@@ -1,6 +1,6 @@
 {
 	"name": "prc.api",
-	"version": "0.0.0",
+	"version": "0.0.1",
 	"type": "module",
 	"description": "prc.api is an asynchronous Node.js wrapper for the PRC/ERLC API.",
 	"main": "dist/index.js",
