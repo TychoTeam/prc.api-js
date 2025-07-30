@@ -59,7 +59,7 @@ jobs:
       - name: Publish package 📦 to npm
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm publish --provenance
+        run: npm publish --access public --provenance
 
   github-release:
     name: Upload package to GitHub Release
