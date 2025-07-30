@@ -1,0 +1,88 @@
+name: Publish 📦 to npm
+
+on:
+  push:
+    tags:
+      - "*"
+
+jobs:
+  build:
+    name: Build distribution 📦
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18.x"
+      - name: Install dependencies
+        run: npm ci
+      - name: Build package
+        run: npm run build --if-present
+      - name: Store the distribution packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: npm-package-distributions
+          path: |
+            dist/
+            package.json
+            package-lock.json
+
+  publish-to-npm:
+    name: Publish Node.js package 📦 to npm
+    needs:
+      - build
+    runs-on: ubuntu-latest
+    environment:
+      name: npm
+      url: https://www.npmjs.com/package/prc.api
+    permissions:
+      id-token: write # for npm provenance
+
+    steps:
+      - name: Download all the dists
+        uses: actions/download-artifact@v4
+        with:
+          name: npm-package-distributions
+          path: .
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18.x"
+          registry-url: "https://registry.npmjs.org"
+      - name: Publish package 📦 to npm
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish --provenance
+
+  github-release:
+    name: Upload package to GitHub Release
+    needs:
+      - publish-to-npm
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download all the dists
+        uses: actions/download-artifact@v4
+        with:
+          name: npm-package-distributions
+          path: dist/
+      - name: Create GitHub Release
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --notes ""
+      - name: Upload artifacts to GitHub Release
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          gh release upload "$GITHUB_REF_NAME" dist/** --repo "$GITHUB_REPOSITORY"
