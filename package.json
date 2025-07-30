@@ -1,0 +1,32 @@
+{
+	"name": "prc.api",
+	"version": "0.0.0",
+	"type": "module",
+	"description": "prc.api is an asynchronous Node.js wrapper for the PRC/ERLC API.",
+	"main": "dist/index.js",
+	"scripts": {
+		"build": "npx shx rm -rf dist/ && npx tsc"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/TychoTeam/prc.api-js.git"
+	},
+	"keywords": [
+		"erlc",
+		"prc"
+	],
+	"author": "tycho",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/TychoTeam/prc.api-js/issues"
+	},
+	"homepage": "https://github.com/TychoTeam/prc.api-js",
+	"devDependencies": {
+		"@types/node": "^24.1.0",
+		"shx": "^0.4.0",
+		"typescript": "^5.8.3"
+	},
+	"engines": {
+		"node": ">=18.0.0"
+	}
+}

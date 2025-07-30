@@ -22,7 +22,7 @@ jobs:
         with:
           node-version: "18.x"
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --include=dev
       - name: Build package
         run: npm run build --if-present
       - name: Store the distribution packages
@@ -32,7 +32,7 @@ jobs:
           path: |
             dist/
             package.json
-            package-lock.json
+            README.md
 
   publish-to-npm:
     name: Publish Node.js package 📦 to npm
@@ -41,7 +41,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: npm
-      url: https://www.npmjs.com/package/prc.api
+      url: https://npmjs.com/package/prc.api
     permissions:
       id-token: write # for npm provenance
 
